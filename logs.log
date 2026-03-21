@@ -1,0 +1,27 @@
+2026-03-14T09:41:25.607Z warn Password has not been provided (--noPassword)! It's recommended to use one for security!
+2026-03-14T09:41:25.620Z info Generating config from preset 'bootstrap'
+2026-03-14T09:41:25.620Z info Using assembly 'demo'
+2026-03-14T09:41:25.672Z info Generating Main account...
+2026-03-14T09:41:25.680Z info Generating Transport account...
+2026-03-14T09:41:25.688Z info Generating Remote account...
+2026-03-14T09:41:25.697Z info Generating VRF account...
+2026-03-14T09:41:25.809Z info User for docker resolved: 501:20
+2026-03-14T09:41:25.810Z info Running image using Exec: symbolplatform/symbol-server:gcc-1.0.3.6 bash createNodeCertificates.sh
+2026-03-14T09:43:08.857Z info Certificate for node node created.
+2026-03-14T09:43:08.920Z info Generating node server configuration
+2026-03-14T09:43:09.045Z warn The peer lists could not be resolved. peers-p2p.json and peers-api.json are empty!
+2026-03-14T09:43:09.045Z info Generating broker broker configuration
+2026-03-14T09:43:09.163Z info Creating Voting key file of 720 epochs for node node. This could take a while!
+2026-03-14T09:43:09.165Z info Voting file is created using docker and catapult.tools.votingkey
+2026-03-14T09:43:09.178Z info Running image using Exec: symbolplatform/symbol-server:gcc-1.0.3.6 /usr/catapult/bin/catapult.tools.votingkey --secret=HIDDEN_KEY --startEpoch=1 --endEpoch=720 --output=/votingKeys/private_key_tree1.dat
+2026-03-14T09:43:10.136Z info 
+2026-03-14T09:43:10.137Z info A new Voting File for the node node has been generated. The link transaction will be included in the nemesis block.
+2026-03-14T09:43:10.137Z info 
+2026-03-14T09:43:10.159Z info Deleting folder target/nemesis/seed
+2026-03-14T09:43:10.243Z info Running image using Exec: symbolplatform/symbol-server:gcc-1.0.3.6 /usr/catapult/bin/catapult.tools.nemgen --resources=/server-config --nemesisProperties=./server-config/block-properties-file.properties --useTemporaryCacheDatabase
+2026-03-14T09:43:11.508Z info Deleting folder /Users/mee/projects/FoundProof/target/nemesis/seed/testnet
+2026-03-14T09:43:11.510Z info Nemgen executed!!!!
+2026-03-14T09:43:11.526Z info Configuration generated.
+2026-03-14T09:43:11.536Z info Creating docker-compose.yml from last used profile.
+2026-03-14T09:43:11.543Z info The docker-compose.yml file created /Users/mee/projects/FoundProof/target/docker/docker-compose.yml
+2026-03-14T09:43:11.557Z info Spawn command: docker-compose -f target/docker/docker-compose.yml up --remove-orphans --detach

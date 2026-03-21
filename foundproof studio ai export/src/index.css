@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* スクロールバーのカスタマイズ */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(23, 43, 42, 0.2);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(23, 43, 42, 0.4);
+}
+
+.leaflet-container {
+  background: #e8eeed;
+}
+
+.leaflet-container .leaflet-tile {
+  mix-blend-mode: normal !important;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  image-rendering: auto;
+}
+
+.leaflet-container .leaflet-tile-container,
+.leaflet-container .leaflet-pane {
+  transform: translateZ(0);
+}

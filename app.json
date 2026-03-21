@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "FoundProof",
+    "slug": "foundproof",
+    "scheme": "foundproof",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "FoundProof uses the camera to document a finding event.",
+        "NSLocationWhenInUseUsageDescription": "FoundProof uses location to record where an item was found.",
+        "NSPhotoLibraryUsageDescription": "FoundProof lets you select an image for a finding record."
+      }
+    },
+    "android": {
+      "permissions": [
+        "CAMERA",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    }
+  }
+}
