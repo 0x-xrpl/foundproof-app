@@ -55,6 +55,14 @@ The demo frontend runs on `http://127.0.0.1:5173`.
 
 This avoids colliding with the local Symbol REST node on `http://127.0.0.1:3000`.
 
+## Vercel
+
+This folder can be deployed to Vercel as a standalone demo frontend.
+
+- set the Vercel project root directory to this folder
+- if `VITE_FOUNDPROOF_API_BASE_URL` is not set, the app runs with embedded demo records
+- if `VITE_FOUNDPROOF_API_BASE_URL` is set, the app will use the external FoundProof API
+
 ## Demo flow
 
 1. create a record
