@@ -9,7 +9,7 @@ https://www.canva.com/design/DAHEoX5Th6U/zs0F3iIJBJpt81pizmv2rQ/edit?utm_content
 ## Demo Movie:  
 https://vimeo.com/1175836930
 
-
+## About
 
 FoundProof is a proof network for lost-and-found records.
 
