@@ -3,7 +3,7 @@
 ### 拾った瞬間を、証明に
 
 ## Presentation
-https://www.canva.com/design/DAHEoX5Th6U/zs0F3iIJBJpt81pizmv2rQ/edit?utm_content=DAHEoX5Th6U&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+https://www.canva.com/design/DAHEoX5Th6U/SPB7rrPZs7wUmJIqV-djCg/view?utm_content=DAHEoX5Th6U&utm_campaign=designshare&utm_medium=link&utm_source=viewer
 
 
 ## Demo Movie
