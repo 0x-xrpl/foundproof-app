@@ -1,12 +1,13 @@
 # FoundProof
 
-## 拾った瞬間を、証明に
+### 拾った瞬間を、証明に
 
 **Presentation**:  
 https://www.canva.com/design/DAHEoX5Th6U/zs0F3iIJBJpt81pizmv2rQ/edit?utm_content=DAHEoX5Th6U&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 **Demo Movie**:  
 https://vimeo.com/1175836930
+---
 
 
 FoundProof is a proof network for lost-and-found records.
