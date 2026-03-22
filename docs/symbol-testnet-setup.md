@@ -2,70 +2,67 @@
 
 ## Purpose
 
-This document explains what to put in `.env`, how to prepare a Symbol Testnet wallet, and how to move FoundProof from `mock` mode to `api` mode.
+This document explains the optional real-network path for FoundProof.
 
-If the public Testnet faucet is blocked or unreliable, use the private-network alternative instead:
+Use it when you want the local API to anchor proof records on Symbol Testnet through server-side signing.
+
+If you want to validate the product flow before connecting a funded account, start with `mock` mode first.
+
+If you prefer a local proof environment without public faucet dependency, use the private-network alternative instead:
 
 - [Symbol Private Network Setup](./symbol-private-network-setup.md)
 
-## Required setup items
+## Runtime role
 
-Before real anchoring, prepare all of the following:
+Symbol Testnet is not required to understand the MVP.
+
+The current prototype is intentionally structured so that:
+
+- `mock` mode covers the core product walkthrough
+- Symbol Testnet is an optional real proof path
+- real anchoring becomes available when the API and Symbol account configuration are ready
+
+## Required setup items for real anchoring
+
+Prepare the following only when enabling the real Testnet path:
 
 1. Node.js 20+ and npm
 2. Expo Go or a simulator/emulator
-3. A local `.env` file copied from [`.env.example`](/Users/mee/projects/FoundProof/.env.example)
-4. A dedicated Symbol Testnet wallet for the FoundProof server
-5. Testnet `symbol.xym` funding for that wallet
+3. A local `.env` file copied from `.env.example` or `.env.api.example`
+4. A dedicated Symbol Testnet account for server-side signing
+5. Testnet `symbol.xym` funding for that account
 6. A reachable Symbol Testnet REST node
-
-Alternative for auth-free local development:
-
-- a local Symbol Bootstrap private network with demo assembly
-
-If you want a ready-to-edit API template, copy [`.env.api.example`](/Users/mee/projects/FoundProof/.env.api.example) to `.env`.
 
 ## `.env` fields
 
-### Required for mock mode
+### Mock-mode minimum
 
-- `EXPO_PUBLIC_DATA_MODE`
-  Use `mock` to keep the Expo app usable without API or blockchain setup.
+- `EXPO_PUBLIC_DATA_MODE=mock`
 
-### Required for API mode
+This keeps the prototype ready for immediate validation without API or blockchain setup.
+
+### API-mode minimum
 
 - `PORT`
-  Local API port. Default is `8787`.
-- `EXPO_PUBLIC_DATA_MODE`
-  Set to `api`.
-- `EXPO_PUBLIC_API_BASE_URL`
-  Local API base URL used by the Expo app. Example: `http://127.0.0.1:8787`
+- `EXPO_PUBLIC_DATA_MODE=api`
+- `EXPO_PUBLIC_API_BASE_URL=http://127.0.0.1:8787`
 
-### Required for Symbol Testnet anchor
+### Real Symbol Testnet anchoring
 
 - `SYMBOL_NODE_URL`
-  Public Symbol Testnet REST node used by the API. Example: `https://sym-test-01.opening-line.jp:3001`
-- `SYMBOL_NETWORK_TYPE`
-  Keep this as `TEST_NET`
+- `SYMBOL_NETWORK_TYPE=TEST_NET`
 - `SYMBOL_PRIVATE_KEY`
-  Private key of the dedicated FoundProof Testnet server wallet
 - `SYMBOL_MAX_FEE`
-  Transfer fee multiplier. Default `100` is fine for the MVP
 - `SYMBOL_MESSAGE_PREFIX`
-  Prefix for the proof payload message. Keep `FOUNDPROOF:`
 
-### Optional
+### Optional operational values
 
 - `SYMBOL_PUBLIC_KEY`
-  Operational reference value for your own verification
 - `SYMBOL_GENERATION_HASH`
-  Leave empty unless your chosen infrastructure requires it explicitly
 - `SYMBOL_EPOCH_ADJUSTMENT_SECONDS`
-  Leave empty for public Testnet. For local private networks, set this from `/network/properties`
 - `SYMBOL_EXPLORER_BASE_URL`
-  Optional explicit explorer base. Public Testnet uses `https://testnet.symbol.fyi`
 
-## Recommended `.env` values for real anchor mode
+## Recommended `.env` pattern for real Testnet anchoring
 
 ```dotenv
 PORT=8787
@@ -74,88 +71,52 @@ EXPO_PUBLIC_API_BASE_URL=http://127.0.0.1:8787
 SYMBOL_NODE_URL=https://sym-test-01.opening-line.jp:3001
 SYMBOL_NETWORK_TYPE=TEST_NET
 SYMBOL_GENERATION_HASH=
-SYMBOL_PRIVATE_KEY=YOUR_FOUNDPROOF_TESTNET_PRIVATE_KEY
-SYMBOL_PUBLIC_KEY=YOUR_FOUNDPROOF_TESTNET_PUBLIC_KEY
+SYMBOL_PRIVATE_KEY=PASTE_DEDICATED_TESTNET_SERVER_PRIVATE_KEY
+SYMBOL_PUBLIC_KEY=OPTIONAL_SERVER_PUBLIC_KEY
 SYMBOL_MAX_FEE=100
 SYMBOL_MESSAGE_PREFIX=FOUNDPROOF:
 ```
 
-Equivalent shortcut:
+Shortcut:
 
 ```bash
 cp .env.api.example .env
 ```
 
-## Wallet preparation
+## Account preparation
 
-Use a dedicated Symbol Testnet wallet for server-side signing.
+Use a dedicated Symbol Testnet account for server-side signing.
 
-Fastest recommended approach:
-
-1. Download and install Symbol Desktop Wallet from the official wallet page.
-2. Create a new account using the wallet account-creation flow.
-3. Select `TEST_NET` for that account.
-4. Copy and store the private key securely.
-5. Record the public key and address for operations and verification.
-6. Use the official testnet faucet linked from Symbol docs to request `symbol.xym`.
-7. Wait for the funding transaction to confirm before trying to anchor records.
-
-Shortest path for FoundProof:
+Recommended flow:
 
 1. create a dedicated Testnet account in Symbol Desktop Wallet
-2. copy the private key
-3. paste it into `.env` from [`.env.api.example`](/Users/mee/projects/FoundProof/.env.api.example)
-4. request faucet funds to that Testnet address
-5. start `npm run server`
-6. run the API checklist
+2. keep the private key securely
+3. note the public key and address for operational reference
+4. fund the Testnet account with `symbol.xym`
+5. place the server-side key into `.env`
+6. start the local API and use the API checklist
 
 Important:
 
-- Do not use a mainnet wallet.
-- Do not put a personal long-term wallet into `.env`.
-- Treat the server private key as sensitive even on testnet.
+- use a dedicated Testnet account, not a personal long-term wallet
+- treat the server-side private key as sensitive, even on Testnet
+- use funding only when you are enabling the real proof path
 
 ## API mode migration order
 
-Move from `mock` to `api` in this order:
+Recommended order:
 
-1. confirm Expo UI works in `mock`
-2. prepare Testnet wallet
-3. fund the Testnet wallet
-4. copy `.env.api.example` to `.env`
-5. fill in `SYMBOL_PRIVATE_KEY` and optional `SYMBOL_PUBLIC_KEY`
-6. start the API with `npm run server`
-7. start Expo with `npm run start`
-8. follow [API Mode Checklist](./api-mode-checklist.md)
+1. confirm the product flow in `mock` mode
+2. copy `.env.api.example` to `.env`
+3. fill the required API and Symbol values
+4. confirm the dedicated Testnet account is funded
+5. start the API with `npm run server`
+6. start the app with `npm run start`
+7. follow [API Mode Checklist](./api-mode-checklist.md)
 
-## Official references
+## Minimal values before first real connection
 
-- Symbol Wallets: https://docs.symbol.dev/wallets.html
-- Symbol workstation and test currency guide: https://docs.symbol.dev/getting-started/setup-workstation.html
-- Symbol transaction concept and announce flow: https://docs.symbol.dev/concepts/transaction.html
-- Symbol Bootstrap quickstart: https://docs.symbol.dev/guides/network/quickstart-symbol-bootstrap.html
-
-## Funding shortcut
-
-The Symbol docs point to the testnet faucet from the workstation guide.
-
-Funding flow:
-
-1. open the faucet linked from the Symbol docs
-2. paste your dedicated Testnet address
-3. request `symbol.xym`
-4. wait for confirmation
-5. confirm the wallet balance in Symbol Desktop Wallet before anchoring
-
-## Minimal `.env.api.example` usage
-
-Use the dedicated API template:
-
-```bash
-cp .env.api.example .env
-```
-
-Then fill only these required values first:
+These are the minimum values to fill first:
 
 - `EXPO_PUBLIC_DATA_MODE=api`
 - `EXPO_PUBLIC_API_BASE_URL=http://127.0.0.1:8787`
@@ -163,15 +124,30 @@ Then fill only these required values first:
 - `SYMBOL_NETWORK_TYPE=TEST_NET`
 - `SYMBOL_PRIVATE_KEY=...`
 
-Optional later:
+Add `SYMBOL_PUBLIC_KEY` as an optional reference if useful for operations or manual verification.
 
-- `SYMBOL_PUBLIC_KEY`
-- `SYMBOL_GENERATION_HASH`
+## Real-connection notes
 
-## Common failure points
+Real proof anchoring is enabled when:
 
-- wrong network: account is not `TEST_NET`
-- unfunded wallet: no `symbol.xym` to pay transaction fee
-- wrong private key in `.env`
-- API base URL and server port do not match
-- Symbol node URL is unreachable
+- the local API is running
+- the Symbol node is reachable
+- the dedicated server-side Testnet account is funded
+- the required `.env` values are present
+
+This is a supported runtime path, not the only way to evaluate the prototype.
+
+## Common operational checks
+
+- confirm the account is `TEST_NET`
+- confirm the account has enough `symbol.xym`
+- confirm the node URL is reachable
+- confirm `EXPO_PUBLIC_API_BASE_URL` matches the local API port
+- confirm `.env` is in `api` mode when testing the real path
+
+## Official references
+
+- Symbol Wallets: https://docs.symbol.dev/wallets.html
+- Symbol workstation and test currency guide: https://docs.symbol.dev/getting-started/setup-workstation.html
+- Symbol transaction concept and announce flow: https://docs.symbol.dev/concepts/transaction.html
+- Symbol Bootstrap quickstart: https://docs.symbol.dev/guides/network/quickstart-symbol-bootstrap.html

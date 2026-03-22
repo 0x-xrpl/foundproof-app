@@ -1,79 +1,80 @@
 # FoundProof Web Demo
 
-This Vite app is the hackathon demo frontend for FoundProof.
+This Vite app is the web presentation layer for the current FoundProof MVP.
 
-It keeps the current project split:
+It is intentionally scoped to present the core product flow clearly:
 
-- web demo UI: this folder
-- proof API and Symbol anchor: `../server`
-- off-chain record storage: `../server/runtime`
+- capture a finding event
+- show proof-oriented record detail
+- show discovery through history and map views
+- keep Symbol as the proof layer
 
-## What this demo shows
+## Runtime behavior
 
-- finding record creation flow
-- server-side private Symbol proof anchor
-- proof detail and explorer link
-- history and map views
-- API/debug status in the profile screen
-- no wallet-connect step; the demo focuses on Symbol proof itself
+This web app supports two deliberate runtime choices:
 
-Symbol remains the proof layer.
+- embedded demo mode when `VITE_FOUNDPROOF_API_BASE_URL` is not set
+- external API mode when `VITE_FOUNDPROOF_API_BASE_URL` is configured
 
-## Setup
+This makes the web demo usable as a standalone product walkthrough while preserving the option to connect it to the real FoundProof API later.
 
-1. install dependencies
+## What this web demo is for
+
+- presenting the product flow with stable demo data
+- showing proof detail and discovery views
+- optionally connecting to the FoundProof API when server-side configuration is ready
+
+The web demo does not change the architecture:
+
+- search and image data remain off-chain
+- proof remains server-side and Symbol-based
+
+## Local setup
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. copy env template
-
-```bash
-cp .env.example .env.local
-```
-
-3. set API base URL if needed
-
-```dotenv
-VITE_FOUNDPROOF_API_BASE_URL=http://127.0.0.1:8787
-```
-
-4. start the FoundProof API from the project root
-
-```bash
-npm run server
-```
-
-5. start this web app
+Run locally:
 
 ```bash
 npm run dev
 ```
 
-The demo frontend runs on `http://127.0.0.1:5173`.
+The app runs on:
 
-This avoids colliding with the local Symbol REST node on `http://127.0.0.1:3000`.
+```text
+http://127.0.0.1:5173
+```
+
+## Optional API connection
+
+If you want this web demo to use an external FoundProof API, add:
+
+```dotenv
+VITE_FOUNDPROOF_API_BASE_URL=http://127.0.0.1:8787
+```
+
+If no API base URL is set, the web app uses embedded demo records by design.
 
 ## Vercel
 
-This folder can be deployed to Vercel as a standalone demo frontend.
+This folder can be deployed directly to Vercel.
 
-- set the Vercel project root directory to this folder
-- if `VITE_FOUNDPROOF_API_BASE_URL` is not set, the app runs with embedded demo records
-- if `VITE_FOUNDPROOF_API_BASE_URL` is set, the app will use the external FoundProof API
+Recommended Vercel settings:
 
-## Demo flow
+- Root Directory: `web`
+- Framework: `Vite`
+- Build Command: `npm run build`
+- Output Directory: `dist`
 
-1. create a record
-2. save and anchor it on private Symbol
-3. open proof detail
-4. open explorer
-5. show profile/debug status
+If no API base URL is configured in Vercel, the deployed site uses embedded demo records.
+If an API base URL is configured, the same web UI can point to the external FoundProof API.
 
 ## Notes
 
-- the API must allow browser access; the root server now sends CORS headers
-- the Symbol proof transaction is still signed server-side
-- use the root `.env` to switch between public testnet and private bootstrap network
-- this demo is currently optimized for the local private Symbol network
+- this folder is optimized for a polished MVP walkthrough
+- real Symbol anchoring remains available through the server-side runtime
+- the standalone web deployment is presentation-ready even before external API configuration is connected

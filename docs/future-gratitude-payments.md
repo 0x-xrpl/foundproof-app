@@ -55,7 +55,7 @@ Therefore, if JPYC is considered later, the adapter layer should allow:
 - Soneium as one future route
 - Astar as a separate possible JPYC-compatible route
 
-## What is intentionally not implemented
+## What remains disabled by default in the current MVP
 
 - wallet connection
 - token transfer

@@ -4,65 +4,71 @@
 
 FoundProof is a proof network for lost-and-found records.
 
-FoundProof is not a peer-to-peer exchange or resale platform.
+FoundProof documents a finding event, keeps discovery data searchable off-chain, and anchors a verifiable proof of that event on Symbol.
 
-The app helps document a finding event and supports handoff to the appropriate institution.
-
-Ownership is not determined by the app.
-
-AI assists input and discovery, but does not make legal or moral judgments.
-
-Symbol is used as the proof layer.
+It is not a peer-to-peer exchange or resale platform.
+It does not determine ownership.
+It supports handoff to the appropriate institution.
 
 ## Project overview
 
-FoundProof records the moment someone finds a lost item, preserves the searchable discovery data off-chain, and anchors a verifiable proof of that finding event on Symbol.
+FoundProof is designed around four deliberate responsibilities:
 
-The product is designed for:
+- record a finding event
+- preserve a verifiable proof of that record
+- keep lost-item discovery searchable across records
+- support handoff to the appropriate institution
 
-- recording a finding event
-- proving the integrity of that record
-- helping lost-item owners discover likely candidates
-- supporting handoff to the appropriate institution
+The product is intentionally not for:
 
-The product is explicitly not for:
-
-- peer-to-peer handoff
+- direct person-to-person return matching
 - resale or exchange
 - NFT ownership logic
 - legal or ownership judgment
 
 ## Why Symbol
 
-FoundProof uses Symbol as the proof layer because the MVP needs:
+FoundProof uses Symbol only as the proof layer.
 
-- tamper-evident record anchoring
-- timestamp integrity
+The current MVP focuses on:
+
+- tamper-evident proof anchoring
 - stable transaction references
-- a simple proof story for demos and judges
+- timestamp integrity
+- a clear proof-verification flow
 
-Search does not belong on-chain. Images do not belong on-chain. Only hashes and minimal metadata are anchored.
+Search and image data remain off-chain.
+Only hashes and minimal metadata are anchored.
 
-## MVP scope
+## MVP positioning
 
-Implemented in this repository:
+This repository presents FoundProof as a scoped MVP with two runtime choices:
+
+- `mock` mode first, for validating the complete product flow without external chain setup
+- optional real connection paths, for server-side Symbol anchoring when the API and Symbol account configuration are ready
+
+This keeps the MVP clear by default while preserving a real proof path through configuration.
+
+## Current prototype
+
+Included in this repository:
 
 - Expo Router mobile skeleton
+- Vite web demo in [`web/`](./web)
 - Capture flow for image, time, location, category, description, and handoff type
-- Node API for record creation, search, detail, and anchoring
+- Node API structure for record creation, search, detail, and proof flows
 - Off-chain image and record storage abstraction
 - Search flow with keyword, category, area, and date filters
 - `imageHash` and `recordHash` generation
-- Symbol proof anchor with server-side signing
+- Symbol proof path through server-side signing
 - Record detail and proof detail screens
 - Supabase-ready schema proposal
-- Demo scripts for 60 seconds and 3 minutes
-- Transaction verification notes
-- Mock mode for app flows before API and Symbol credentials are ready
-- API health endpoint and Expo debug screen for runtime checks
+- Demo scripts and verification notes
+- mock-mode-first runtime flow
+- optional Testnet and private-network runtime paths
 - future gratitude-payment adapter extension points, disabled by default
 
-Explicitly out of scope:
+Explicitly out of current MVP scope:
 
 - NFT minting
 - token trading
@@ -70,15 +76,16 @@ Explicitly out of scope:
 - direct return matching
 - ownership verification
 - legal judgment
-- gratitude payments in the current MVP
+- gratitude payments in the current MVP flow
 
 ## Architecture
 
-### Layers
+### Layer split
 
-- Mobile app: Expo Router screens for capture, search, result list, detail, and proof.
-- Discovery layer: off-chain API, storage, and searchable metadata.
-- Proof layer: Symbol self-transfer anchor for `recordHash`.
+- Mobile app: Expo Router screens for capture, search, result list, detail, and proof
+- Web demo: Vite frontend in [`web/`](./web)
+- Discovery layer: off-chain API, storage, and searchable metadata
+- Proof layer: Symbol self-transfer anchor for `recordHash`
 
 Future-only extension:
 
@@ -86,27 +93,31 @@ Future-only extension:
 
 ### Runtime choice for this prototype
 
-- Default mode is `mock`, so the Expo app can be used before the local API or Symbol wallet is configured.
-- Images are uploaded from the app to the local API as base64 and stored under `server/runtime/uploads`.
-- Records are stored in `server/runtime/records.json`.
-- Proof creation is performed server-side and announced to Symbol.
-- The Symbol anchor implementation is in [`server/symbolAnchor.ts`](./server/symbolAnchor.ts).
-- For local development without public faucet dependency, FoundProof can also target a local Symbol Bootstrap private network.
+The repository is organized so the product can be understood before any funded chain account is connected.
+
+- Default mode is `mock`
+- The mobile app remains usable before the local API or Symbol account is configured
+- The web demo can also run with embedded demo records when no external API is configured
+- Real proof anchoring is available when the local API and Symbol server-side environment are ready
+- For local proof verification without public faucet dependency, the same architecture can point to a Symbol Bootstrap private network
+
+This keeps the MVP easy to evaluate before any real network path is enabled.
 
 ### Folder structure
 
 ```text
 app/                  Expo Router screens
+web/                  Vite demo frontend
 src/components/       Shared UI blocks
 src/constants/        Product copy and theme tokens
 src/data/             Categories and handoff types
-src/services/gratitude/ Future payment adapter extension points
 src/services/         AI stub and mobile API client flows
+src/services/gratitude/ Future payment adapter extension points
 src/types/            FoundRecord schema
 src/utils/            Hashing, IDs, dates, location helpers
 server/               API, storage, and Symbol anchor
 supabase/             Deployment-ready SQL schema
-docs/                 Architecture notes and demo scripts
+docs/                 Setup notes, architecture notes, and demo scripts
 ```
 
 ## Core data model
@@ -158,21 +169,21 @@ Outputs:
 
 - `txHash`
 
-See:
+Reference files:
 
 - [`server/symbolAnchor.ts`](./server/symbolAnchor.ts)
 - [`server/index.ts`](./server/index.ts)
 - [`docs/transaction-verification.md`](./docs/transaction-verification.md)
 
-## Off-chain DB and storage
+## Off-chain discovery and storage
 
-This prototype uses a lightweight local API so the app can demonstrate the intended separation between mobile, off-chain storage, and blockchain proof.
+This prototype uses a lightweight local API to demonstrate the intended split between UI, searchable data, and blockchain proof.
 
 For deployment, the repository includes a Supabase-ready schema in [`supabase/schema.sql`](./supabase/schema.sql).
 
 Recommended production split:
 
-- Storage bucket: original images and thumbnails
+- storage bucket: original images and thumbnails
 - `found_records` table: searchable metadata and proof references
 - indexes on `category`, `captured_at`, `location_label`, `handoff_type`, and `search_keywords`
 
@@ -193,7 +204,7 @@ AI must not:
 
 ## Future gratitude payments
 
-The current MVP does not implement any payment flow.
+The current MVP does not include a payment flow in the active product path.
 
 Only extension points are prepared, and they are disabled by default.
 
@@ -221,41 +232,19 @@ See:
 
 ## Demo method
 
-### Fast path
+### Default evaluation path
 
-1. Open the Capture tab.
-2. Take or choose a photo of a found item.
-3. Capture location and run AI assist.
-4. Select an institution handoff type.
-5. Save the record.
-6. Open the Proof screen and anchor it.
-7. Switch to Search and query for the item.
-8. Open the detail page to inspect the record hash, transaction hash, and explorer link.
+The recommended way to evaluate the current MVP is:
 
-### Recommended demo story
+1. start in `mock` mode
+2. validate capture, proof presentation, detail, and search flows
+3. use the real Symbol path only when server-side configuration is ready
 
-Use the station-earbuds scenario defined in [`docs/demo-script.md`](./docs/demo-script.md).
+### Recommended story
+
+Use the station-earbuds scenario in [`docs/demo-script.md`](./docs/demo-script.md).
 
 ## Local setup
-
-### Required setup items
-
-Before real Symbol anchoring, prepare these items:
-
-1. Node.js 20+ and npm
-2. Expo Go or iOS/Android simulator
-3. A local `.env` file copied from `.env.example`
-4. A funded Symbol account private key for server-side signing
-5. A reachable Symbol node
-
-You do not need items 4-6 to use mock mode.
-
-Detailed preparation guides:
-
-- [Symbol Testnet Setup](./docs/symbol-testnet-setup.md)
-- [Symbol Private Network Setup](./docs/symbol-private-network-setup.md)
-- [API Mode Checklist](./docs/api-mode-checklist.md)
-- [MVP Flow Checklist](./docs/mvp-flow-checklist.md)
 
 ### Install
 
@@ -267,7 +256,7 @@ npm run typecheck
 
 ### Run in mock mode
 
-This is the recommended starting point until the API and Symbol wallet are ready.
+This is the recommended starting point.
 
 Minimal `.env`
 
@@ -281,66 +270,35 @@ Run:
 npm run start
 ```
 
-In `mock` mode, the Expo app uses local device storage for:
+In `mock` mode, the Expo app can be used for:
 
-- record creation
-- search
-- local proof hash generation
-- mock proof anchoring
+- capture flow validation
+- local record creation
+- search flow validation
+- proof screen validation
+- overall product walkthrough
 
-The API does not need to be reachable for these flows.
+The local API and Symbol account do not need to be connected for these flows.
 
-Mock mode verification order:
+### Optional real connection path: local API + Symbol
 
-1. open Capture
-2. create a record
-3. open Proof
-4. run anchor in mock mode
-5. open Detail
-6. open Search
-7. open Debug
+When you want real server-side proof anchoring, switch to `api` mode and provide the required Symbol environment values.
 
-Mock mode checklist:
-
-- Capture saves a record successfully
-- Proof screen shows `Record hash`
-- Anchor completes without API
-- Detail screen shows `Transaction hash`
-- Search finds the record
-- Debug tab shows:
-  - `Current mode = mock`
-  - API endpoint value
-  - health status
-  - last anchor txHash
-
-### Run with local API + Symbol Testnet
-
-When your Symbol Testnet wallet and funding are ready, switch `.env` to:
-
-```dotenv
-EXPO_PUBLIC_DATA_MODE=api
-EXPO_PUBLIC_API_BASE_URL=http://127.0.0.1:8787
-SYMBOL_NODE_URL=https://sym-test-01.opening-line.jp:3001
-SYMBOL_NETWORK_TYPE=TEST_NET
-SYMBOL_PRIVATE_KEY=YOUR_TESTNET_PRIVATE_KEY
-SYMBOL_PUBLIC_KEY=YOUR_TESTNET_PUBLIC_KEY
-SYMBOL_MAX_FEE=100
-SYMBOL_MESSAGE_PREFIX=FOUNDPROOF:
-```
-
-Or start from the dedicated API template:
+Start from the API template:
 
 ```bash
 cp .env.api.example .env
 ```
 
-Minimum values to fill before first real connection:
+Minimum values for a real Symbol connection:
 
 - `EXPO_PUBLIC_DATA_MODE=api`
 - `EXPO_PUBLIC_API_BASE_URL=http://127.0.0.1:8787`
-- `SYMBOL_NODE_URL=https://sym-test-01.opening-line.jp:3001`
+- `SYMBOL_NODE_URL=...`
 - `SYMBOL_NETWORK_TYPE=TEST_NET`
-- `SYMBOL_PRIVATE_KEY=YOUR_FOUNDPROOF_TESTNET_PRIVATE_KEY`
+- `SYMBOL_PRIVATE_KEY=...`
+
+For real Symbol anchoring, fill the required server-side environment values with a dedicated funded Testnet account or a local private-network account.
 
 Then run:
 
@@ -349,27 +307,26 @@ npm run server
 npm run start
 ```
 
-Then verify in order with the checklist:
+### Optional real connection path: Symbol Testnet
 
-1. `GET /health`
-2. `POST /records`
-3. `POST /records/:id/anchor`
-4. `GET /records/:id`
-5. Expo proof/detail UI
+Use Symbol Testnet when you want public-network proof references through the server-side proof path.
 
-API mode migration order:
+Concise path:
 
-1. confirm mock mode UI first
-2. prepare Testnet wallet and funding
-3. copy `.env.api.example` to `.env`
-4. fill in `SYMBOL_PRIVATE_KEY`
-5. run `npm run server`
-6. run `npm run start`
-7. follow [API Mode Checklist](./docs/api-mode-checklist.md)
+1. copy `.env.api.example` to `.env`
+2. set the required API and Symbol values
+3. use a funded dedicated Testnet account for server-side signing
+4. run `npm run server`
+5. run `npm run start`
 
-### Run with local API + Symbol Bootstrap private network
+Detailed operational notes:
 
-Use this path when you want to remove the public faucet dependency entirely.
+- [Symbol Testnet Setup](./docs/symbol-testnet-setup.md)
+- [API Mode Checklist](./docs/api-mode-checklist.md)
+
+### Optional real connection path: local Symbol Bootstrap private network
+
+Use the private-network path when you want local proof verification without depending on public faucet availability.
 
 Start the local private network:
 
@@ -378,140 +335,48 @@ npm run symbol:bootstrap:verify
 npm run symbol:bootstrap:start
 ```
 
-Inspect the local network profile:
+Then collect the network profile and funded account values:
 
 ```bash
 npm run symbol:network:profile -- http://127.0.0.1:3000
-```
-
-Inspect generated funded accounts:
-
-```bash
 npm run symbol:bootstrap:accounts
-```
-
-Then:
-
-```bash
 cp .env.private.example .env
-npm run server
-npm run start
 ```
 
-Expected local services from the official `bootstrap + demo` assembly:
-
-- REST: `http://127.0.0.1:3000`
-- Explorer: `http://127.0.0.1:90`
-- Faucet: `http://127.0.0.1:100`
-
-Private-network migration order:
-
-1. confirm mock mode UI first
-2. start the local bootstrap network
-3. run `npm run symbol:network:profile -- http://127.0.0.1:3000`
-4. run `npm run symbol:bootstrap:accounts`
-5. copy `.env.private.example` to `.env`
-6. fill in `SYMBOL_PRIVATE_KEY`, `SYMBOL_PUBLIC_KEY`, `SYMBOL_GENERATION_HASH`, and `SYMBOL_EPOCH_ADJUSTMENT_SECONDS`
-7. run `npm run server`
-8. run `npm run start`
-9. follow [API Mode Checklist](./docs/api-mode-checklist.md)
-
-API mode checklist summary:
-
-- health endpoint returns `status=ok`
-- record creation returns `id` and `proofRecordHash`
-- anchor returns `proofTxHash`
-- detail returns explorer link
-- proof screen displays Symbol proof info
-- debug tab shows:
-  - `Current mode = api`
-  - correct API endpoint
-  - API health status
-  - last anchor txHash
-
-Fixed implementation assumptions for local Symbol Bootstrap:
-
-- private net REST endpoint is `http://127.0.0.1:3000`
-- private net explorer is `http://127.0.0.1:90`
-- announce-time `transactionStatus` `404 ResourceNotFound` is treated as pending and retried
-
-### Fastest private-net demo flow
-
-Use this sequence for the shortest repeatable demo:
-
-1. `npm run symbol:bootstrap:start`
-2. `npm run symbol:network:profile -- http://127.0.0.1:3000`
-3. `npm run symbol:bootstrap:accounts`
-4. `cp .env.private.example .env`
-5. fill in `SYMBOL_PRIVATE_KEY`, `SYMBOL_PUBLIC_KEY`, `SYMBOL_GENERATION_HASH`, and `SYMBOL_EPOCH_ADJUSTMENT_SECONDS`
-6. `npm run server`
-7. `npm run start`
-8. create a record from Capture
-9. open Proof and run anchor
-10. open the explorer link
-11. open Detail and Debug
-
-UI values to confirm in the demo:
-
-- Proof screen shows `Transaction hash` and `Explorer URL`
-- Detail screen shows `Record hash`, `Transaction hash`, and `Explorer URL`
-- Debug screen shows `Current mode = api`, the API endpoint, health status, and the last anchor txHash
-
-Shortest real-connection path:
-
-1. create a dedicated Symbol Testnet wallet
-2. fund it from the testnet faucet linked in Symbol docs
-3. `cp .env.api.example .env`
-4. paste the Testnet private key into `.env`
-5. `npm run server`
-6. `npm run start`
-7. follow [API Mode Checklist](./docs/api-mode-checklist.md)
-
-### Install and run commands
-
-Exact commands:
+Then run:
 
 ```bash
-npm install
-cp .env.example .env
-npm run typecheck
 npm run server
 npm run start
 ```
 
-### Environment
+Detailed operational notes:
 
-Copy `.env.example` and configure as needed.
+- [Symbol Private Network Setup](./docs/symbol-private-network-setup.md)
+- [API Mode Checklist](./docs/api-mode-checklist.md)
 
-- `EXPO_PUBLIC_DATA_MODE=mock` keeps the Expo app usable without the API.
-- `EXPO_PUBLIC_DATA_MODE=api` makes the Expo app call the local API.
-- `EXPO_PUBLIC_API_BASE_URL` is used by the mobile app.
-- `SYMBOL_*` variables are used by the server-side anchor flow.
-- `SYMBOL_PRIVATE_KEY` must be a funded Symbol account for real anchoring.
-- `SYMBOL_GENERATION_HASH` and `SYMBOL_EPOCH_ADJUSTMENT_SECONDS` are optional on public Testnet but important for private bootstrap networks.
-- `SYMBOL_EXPLORER_BASE_URL` lets proof screens link to either public Testnet explorer or local bootstrap explorer.
+### Environment summary
 
-See also:
+Copy `.env.example` and adjust only the runtime you want to use.
+
+- `EXPO_PUBLIC_DATA_MODE=mock` keeps the prototype ready for immediate flow validation
+- `EXPO_PUBLIC_DATA_MODE=api` enables the local API runtime
+- `EXPO_PUBLIC_API_BASE_URL` is used by the mobile app
+- `SYMBOL_*` variables are used only by the server-side proof path
+- `SYMBOL_PRIVATE_KEY` should be a dedicated funded account for real proof anchoring
+- `SYMBOL_GENERATION_HASH` and `SYMBOL_EPOCH_ADJUSTMENT_SECONDS` are mainly relevant for private bootstrap networks
+- `SYMBOL_EXPLORER_BASE_URL` lets proof screens point to either public Testnet explorer or a local bootstrap explorer
+
+Additional setup references:
 
 - [Symbol Testnet Setup](./docs/symbol-testnet-setup.md)
 - [Symbol Private Network Setup](./docs/symbol-private-network-setup.md)
 - [API Mode Checklist](./docs/api-mode-checklist.md)
 - [MVP Flow Checklist](./docs/mvp-flow-checklist.md)
 
-### Debug tab
+## What is demoable now
 
-The Expo `Debug` tab shows:
-
-- current mode: `mock` or `api`
-- configured API endpoint
-- current health status
-- last anchor `txHash` seen by the app
-
-Use it as the first sanity check after changing `.env` or switching from `mock` to `api`.
-
-### What works before Symbol setup
-
-Without a funded Symbol account, you can still validate:
+Without any funded Symbol account, the current prototype supports:
 
 - capture UI
 - image selection
@@ -519,18 +384,23 @@ Without a funded Symbol account, you can still validate:
 - AI suggestion flow
 - local record creation
 - local search
-- proof screen rendering in mock mode
+- proof presentation in mock mode
 
-What requires real setup:
+## What requires real setup
+
+The following paths are available through configuration:
 
 - local API runtime
-- Symbol announce
-- real transaction hash
-- explorer verification
+- real Symbol announce
+- real transaction hash generation
+- explorer verification against the selected network
 
-## Notes
+These are optional runtime paths, not prerequisites for understanding the MVP.
+
+## Notes on verification
 
 - FoundProof does not expose direct contact between strangers.
 - FoundProof does not prove ownership.
 - FoundProof proves that a finding event was documented and can be verified later.
-- This Codex run prepared both public Testnet and local private-network paths, but did not bootstrap Docker services or announce a real transaction in this environment.
+- This repository includes both public Testnet and local private-network proof paths.
+- Real-network claims should follow the server-side configuration and runtime path that are actually connected.

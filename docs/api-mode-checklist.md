@@ -2,34 +2,34 @@
 
 ## Goal
 
-Confirm this sequence in order:
+Use this checklist when moving from the default `mock` evaluation path to the optional real API path.
 
-1. health check
-2. record creation
-3. anchor
-4. detail
-5. explorer
-6. Expo proof display
+The purpose is to confirm that:
 
-Fixed implementation assumptions:
+1. the local API is reachable
+2. records are created off-chain
+3. proof anchoring is available through server-side configuration
+4. proof references are returned to the client
 
-- local Symbol Bootstrap REST endpoint is `http://127.0.0.1:3000`
-- local Symbol Bootstrap explorer is `http://127.0.0.1:90`
+Supported real-connection backends for this checklist:
+
+- public Symbol Testnet
+- local Symbol Bootstrap private network
+
+## Fixed runtime assumptions for local private Symbol
+
+- local Symbol Bootstrap REST endpoint: `http://127.0.0.1:3000`
+- local Symbol Bootstrap explorer: `http://127.0.0.1:90`
 - `transactionStatus` `404 ResourceNotFound` immediately after announce is treated as pending and retried
 
 ## Before starting
 
 Confirm these preconditions:
 
-- `.env` exists and `EXPO_PUBLIC_DATA_MODE=api`
-- `SYMBOL_PRIVATE_KEY` is set to a funded Symbol wallet for the selected network
-- `SYMBOL_NODE_URL` points to a reachable Symbol node
+- `.env` exists and is set to `EXPO_PUBLIC_DATA_MODE=api`
+- `SYMBOL_PRIVATE_KEY` is configured for the selected network path
+- `SYMBOL_NODE_URL` points to a reachable node
 - dependencies are installed with `npm install`
-
-Supported anchor backends for this checklist:
-
-- public Symbol Testnet
-- local Symbol Bootstrap private network
 
 ## Start commands
 
@@ -39,7 +39,7 @@ Run the API:
 npm run server
 ```
 
-Run Expo:
+Run the app:
 
 ```bash
 npm run start
@@ -47,21 +47,21 @@ npm run start
 
 Recommended order:
 
-1. copy `.env.api.example` to `.env`
-2. or copy `.env.private.example` to `.env` for local bootstrap mode
-3. fill in `SYMBOL_PRIVATE_KEY`
-4. if using a private network, also set `SYMBOL_GENERATION_HASH` and `SYMBOL_EPOCH_ADJUSTMENT_SECONDS`
-5. start API
-6. run `/health`
-7. create a record
-8. anchor it
-9. inspect detail
-10. open explorer
-11. confirm the same record in Expo UI
+1. validate the core flow in `mock` mode first
+2. copy `.env.api.example` to `.env`, or `.env.private.example` for local bootstrap mode
+3. fill the required Symbol server-side values
+4. start the API
+5. run `/health`
+6. create a record
+7. anchor it
+8. inspect detail
+9. confirm the record in the client UI
 
 ## 1. Health check
 
-Expected result: API returns `{"status":"ok","mode":"api"}` or `{"status":"ok","mode":"mock"}` depending on env
+Expected result:
+
+- API returns `{"status":"ok","mode":"api"}` when API mode is active
 
 ```bash
 curl -sS http://127.0.0.1:8787/health
@@ -137,52 +137,41 @@ Public Testnet explorer format:
 https://testnet.symbol.fyi/transactions/<txHash>
 ```
 
-Local bootstrap demo explorer format:
+Local bootstrap explorer format:
 
 ```text
 http://127.0.0.1:90/transactions/<txHash>
 ```
 
-## 6. Expo UI check
+## 6. Client UI check
 
 Confirm in the app:
 
-- Capture screen can save a record in API mode
-- Proof screen can call anchor successfully
-- Proof screen shows `Transaction hash`
-- Proof screen shows `Explorer URL`
-- Detail screen shows `Record hash`
-- Detail screen shows `Transaction hash`
-- Detail screen shows `Explorer URL`
-- Search screen can find the created record
-- Debug tab shows:
-  - current mode
-  - current API endpoint
-  - health status
-  - last anchor txHash
+- Capture can save a record in API mode
+- the proof flow can anchor successfully
+- proof detail shows the transaction reference
+- detail shows the record and proof reference
+- search can find the created record
 
-## Failure checks
+## Operational checks if a real connection does not complete
 
 If health check fails:
 
 - confirm `npm run server` is running
 - confirm `PORT` and `EXPO_PUBLIC_API_BASE_URL` match
 
-If anchor fails:
+If anchor does not complete:
 
-- confirm `SYMBOL_PRIVATE_KEY` is set
-- confirm the wallet has enough `symbol.xym`
+- confirm `SYMBOL_PRIVATE_KEY` is configured
+- confirm the server-side account has enough `symbol.xym`
 - confirm `SYMBOL_NODE_URL` is reachable
-- confirm `SYMBOL_NETWORK_TYPE=TEST_NET`
-- if using a private bootstrap network, confirm `SYMBOL_GENERATION_HASH` and `SYMBOL_EPOCH_ADJUSTMENT_SECONDS` match the local node
-- if `transactionStatus` returns `404 ResourceNotFound` briefly after announce, the current implementation retries automatically
-- if that `404 ResourceNotFound` persists past the retry window, inspect API logs and confirm the local REST node is healthy
-- if you see `Failure_Core_Insufficient_Balance`, the transaction was announced but rejected on-chain because the Testnet wallet does not have enough XYM
+- confirm the selected network values match the chosen runtime path
+- for private bootstrap mode, confirm `SYMBOL_GENERATION_HASH` and `SYMBOL_EPOCH_ADJUSTMENT_SECONDS`
 
-Most common real-connection mistakes:
+Common real-connection mistakes:
 
-- `.env` still has `EXPO_PUBLIC_DATA_MODE=mock`
-- wrong Testnet wallet key pasted into `.env`
-- wallet was created but not funded yet
-- stale Expo bundle after switching env values
-- API is running on a different port from `EXPO_PUBLIC_API_BASE_URL`
+- `.env` still uses `mock`
+- the wrong server-side key was pasted into `.env`
+- the account is present but not funded yet
+- the app bundle was not refreshed after changing env values
+- the API is running on a different port

@@ -172,7 +172,7 @@ For the UI itself, confirm:
 
 - Proof shows `Transaction hash` and `Explorer URL`
 - Detail shows `Record hash`, `Transaction hash`, and `Explorer URL`
-- Debug shows `mode=api`, the API endpoint, health status, and the last anchor txHash
+- the app is clearly operating in the API-backed runtime
 
 For the app/API flow itself, use [API Mode Checklist](./api-mode-checklist.md).
 

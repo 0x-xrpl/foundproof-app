@@ -12,7 +12,7 @@ Confirm the core flow remains stable:
 
 ## Mock mode
 
-Use this when API and Symbol Testnet wallet are not ready yet.
+Use this as the default MVP validation path.
 
 ### Expected result
 
@@ -22,7 +22,7 @@ Use this when API and Symbol Testnet wallet are not ready yet.
 - mock anchor succeeds
 - proof view shows record hash and tx hash
 - search can find the saved record
-- debug tab shows `mode=mock`
+- runtime indicates `mode=mock`
 
 ### UI checklist
 
@@ -38,11 +38,11 @@ Use this when API and Symbol Testnet wallet are not ready yet.
   - transaction hash
   - explorer link
 - search screen returns the created record
-- debug tab shows last anchor txHash
+- proof presentation remains consistent through the mock flow
 
 ## API mode
 
-Use this only after wallet, funding, and `.env` are ready.
+Use this when the optional real server-side Symbol path is configured.
 
 ### Expected result
 
@@ -54,9 +54,7 @@ Use this only after wallet, funding, and `.env` are ready.
 
 ### UI checklist
 
-- Debug tab shows `mode=api`
-- Debug tab shows correct API endpoint
-- Debug tab health status is `ok (api)`
+- runtime indicates `mode=api`
 - Capture screen save succeeds
 - Proof screen anchor succeeds
 - Detail screen shows:

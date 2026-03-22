@@ -4,7 +4,7 @@
 
 At a station platform, someone finds a pair of wireless earbuds. They open FoundProof, take a photo, and the app records the time and location immediately. AI suggests the category and a short description, but it does not decide ownership.
 
-They choose `station_counter` as the handoff destination and save the record. FoundProof generates an `imageHash`, then a `recordHash`, and anchors that proof on Symbol Testnet. The proof screen shows the record ID, record hash, transaction hash, and explorer link.
+They choose `station_counter` as the handoff destination and save the record. FoundProof generates an `imageHash`, then a `recordHash`, and presents the proof-ready flow. When the server-side Symbol path is connected, that record can be anchored on Symbol. The proof screen shows the record reference and transaction reference.
 
 Now switch to the search flow. A person who lost earbuds searches by keyword, station area, and recent time. FoundProof returns the matching record, and the detail page shows the proof reference plus the institution handoff type. The value is clear: a good-faith finding event becomes verifiable proof, and the lost item becomes discoverable without direct person-to-person contact.
 
@@ -26,7 +26,7 @@ When I save, the app stores the image off-chain, generates `imageHash`, builds a
 
 ### 4. Proof flow
 
-Now I create proof. FoundProof sends only the minimum proof payload to Symbol Testnet. The image itself is never placed on-chain. What goes on-chain is the record hash inside a self-transfer transaction message. The result screen confirms that this record is anchored on Symbol Testnet and shows the transaction hash for verification.
+Now I create proof. FoundProof sends only the minimum proof payload to Symbol. The image itself is never placed on-chain. What goes on-chain is the record hash inside a self-transfer transaction message. The result screen confirms the proof flow and shows the transaction reference when the real Symbol path is connected.
 
 ### 5. Search flow
 
